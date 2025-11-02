@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BestPracticesEFIdentity.Core\BestPracticesEFIdentity.Core.csproj" />
+    <ProjectReference Include="..\BestPracticesEFIdentity.Service\BestPracticesEFIdentity.Service.csproj" />
   </ItemGroup>
 
 </Project>

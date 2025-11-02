@@ -2,6 +2,6 @@
 
 namespace BestPracticesEFIdentity.Core.Entities;
 
-public class AppRole : IdentityRole
+public class AppRole : IdentityRole<string>
 {
 }
