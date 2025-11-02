@@ -58,6 +58,7 @@ public class UserService : IUserService
         if (result.Succeeded) {
 
             TokenDto tokenDto = _tokenService.CreateAccessToken(5);
+            await UpdateRefreshToken(tokenDto.RefreshToken, appUser, tokenDto.Expiration, 5);
             return new()
             {
                 Token = tokenDto,
@@ -68,4 +69,20 @@ public class UserService : IUserService
         return new() { Message = "Başarısız Giriş Denemesi!" };
 
     }
+
+    public async Task UpdateRefreshToken(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate)
+    {
+        if (appUser != null) {
+
+            appUser.RefreshToken = refreshToken;
+            appUser.RefreshTokenExpiration = accessTokenDate.AddMinutes(addOnAccessTokenDate);
+            await _userManager.UpdateAsync(appUser);
+        }
+        else
+        {
+            throw new Exception("Refresh Token oluştururken hata oluştur");
+        }
+    }
+
+
 }

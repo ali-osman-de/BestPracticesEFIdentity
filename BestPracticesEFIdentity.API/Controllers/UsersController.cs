@@ -22,6 +22,14 @@ namespace BestPracticesEFIdentity.API.Controllers
             var res = await _userService.CreateUserAsync(createUserDto, cancellation);
             return Ok(res);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> RefreshToken(CreateUserDto createUserDto, CancellationToken cancellation)
+        {
+            var res = await _userService.CreateUserAsync(createUserDto, cancellation);
+            return Ok(res);
+        }
+
         [HttpPost] 
         public async Task<IActionResult> Login(LoginDto loginDto, CancellationToken cancellation)
         {

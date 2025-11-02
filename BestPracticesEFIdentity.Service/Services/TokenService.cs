@@ -3,6 +3,7 @@ using BestPracticesEFIdentity.Service.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BestPracticesEFIdentity.Service.Services;
@@ -36,6 +37,17 @@ public class TokenService : ITokenService
         JwtSecurityTokenHandler securityTokenHandler = new();
         tokenDto.AccessToken = securityTokenHandler.WriteToken(jwtSecurityToken);
 
+        tokenDto.RefreshToken = CreateRefreshToken();
+
         return tokenDto;
+    }
+
+    public string CreateRefreshToken()
+    {
+        byte[] number = new byte[32];
+        using RandomNumberGenerator numberGenerator =  RandomNumberGenerator.Create();
+        numberGenerator.GetBytes(number);
+        return Convert.ToBase64String(number);
+
     }
 }
