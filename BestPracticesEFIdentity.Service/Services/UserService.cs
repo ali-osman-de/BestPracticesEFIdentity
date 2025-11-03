@@ -2,6 +2,7 @@
 using BestPracticesEFIdentity.Core.Entities;
 using BestPracticesEFIdentity.Service.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BestPracticesEFIdentity.Service.Services;
 
@@ -57,8 +58,8 @@ public class UserService : IUserService
 
         if (result.Succeeded) {
 
-            TokenDto tokenDto = _tokenService.CreateAccessToken(5);
-            await UpdateRefreshToken(tokenDto.RefreshToken, appUser, tokenDto.Expiration, 5);
+            TokenDto tokenDto = _tokenService.CreateAccessToken(15);
+            await UpdateRefreshToken(tokenDto.RefreshToken, appUser, tokenDto.Expiration, 15);
             return new()
             {
                 Token = tokenDto,
@@ -70,12 +71,27 @@ public class UserService : IUserService
 
     }
 
+    public async Task<TokenDto> RenewRefreshToken(string refreshToken, CancellationToken cancellation)
+    {
+        AppUser? appUser =  await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+        if (appUser != null && appUser?.RefreshTokenExpiration > DateTime.UtcNow)
+        {
+            TokenDto token = _tokenService.CreateAccessToken(15);
+            await UpdateRefreshToken(token.RefreshToken, appUser, token.Expiration, 15);
+            return token;
+        }
+        else
+        {
+            throw new Exception("Not Found User!");
+        }
+    }
+
     public async Task UpdateRefreshToken(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate)
     {
         if (appUser != null) {
 
             appUser.RefreshToken = refreshToken;
-            appUser.RefreshTokenExpiration = accessTokenDate.AddMinutes(addOnAccessTokenDate);
+            appUser.RefreshTokenExpiration = accessTokenDate.AddSeconds(addOnAccessTokenDate);
             await _userManager.UpdateAsync(appUser);
         }
         else

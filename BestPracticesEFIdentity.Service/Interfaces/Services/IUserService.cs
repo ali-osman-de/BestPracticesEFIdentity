@@ -8,4 +8,5 @@ public interface IUserService
     Task<CreateUserResponseDto> CreateUserAsync(CreateUserDto createUserDto, CancellationToken cancellation);
     Task<LoginResponseDto> LoginAsync(LoginDto loginDto, CancellationToken cancellation);
     Task UpdateRefreshToken(string refreshToken, AppUser appUser, DateTime accessTokenDate, int addOnAccessTokenDate);
+    Task<TokenDto> RenewRefreshToken(string refreshToken, CancellationToken cancellation);
 }
